@@ -1,0 +1,30 @@
+.glyph {
+  align-items: center;
+  border: 1px solid #FFF;
+  display: flex;
+  height: 80px;
+  flex-flow: row wrap;
+  justify-content: center;
+  padding: 0;
+  width: 70px;
+
+  &--name,
+  &--value {
+    line-height: 1rem;
+  }
+
+  &--name {
+    font-size: 32px;
+  }
+
+  &--value {
+    font-size: 10px;
+  }
+
+  > div {
+    display: flex;
+    flex-flow: column wrap;
+    padding: 4px;
+    width: 100%;
+  }
+}

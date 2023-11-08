@@ -1,4 +1,4 @@
-import type { IFontConvert } from './interfaces'
+import { FontData } from '@react-three/drei'
 
 // get name
 export const getName = (font: opentype.Font) => {
@@ -54,7 +54,6 @@ export const fileBlob = (output: string) => {
 
   return URL.createObjectURL(blob)
 }
-
 export const fontConvert = (font: opentype.Font, indexLetter: number, restrictContent: string) => {
   const scale = (1000 * 100) / ((font.unitsPerEm || 2048) * 72)
   const result: IFontConvert = {
@@ -171,9 +170,7 @@ export const fontConvert = (font: opentype.Font, indexLetter: number, restrictCo
 
   result.boundingBox = {
     yMin: Math.round(font.tables.head.yMin * scale),
-    xMin: Math.round(font.tables.head.xMin * scale),
     yMax: Math.round(font.tables.head.yMax * scale),
-    xMax: Math.round(font.tables.head.xMax * scale)
   }
 
   result.resolution = 1000

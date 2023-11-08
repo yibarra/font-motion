@@ -48,7 +48,7 @@ const LoadFontProvider = ({ children }: ILoadFontProvider) => {
           if (fontBuffer) {
             const font = opentype.parse(fontBuffer)
   
-            setFont(font);
+            setFont(font)
             setFontFace(font, fontBuffer)
           }
         }

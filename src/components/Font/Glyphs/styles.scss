@@ -1,0 +1,15 @@
+.glyphs {
+  display: inline-flex;
+  flex-flow: row wrap;
+  width: 100%;
+  vertical-align: top;
+
+  &--grid {
+    align-items: flex-start;
+    display: flex;
+    gap: 2px;
+    flex-flow: row wrap;
+    justify-content: center;
+    width: 100%;
+  }
+}
