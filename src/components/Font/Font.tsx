@@ -1,12 +1,12 @@
 import React from 'react'
 
 import Glyphs from './Glyphs'
-import Glyph from '../Glyph'
+import GlyphPreview from '../GlyphPreview'
 
 const Font = () => {
   return (
     <div>
-      <Glyph />
+      <GlyphPreview />
 
       <Glyphs />
     </div>

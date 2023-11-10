@@ -1,0 +1,13 @@
+.glyph-preview {
+  border: 1px solid white;
+  height: 210px;
+  padding: 40px;
+  position: relative;
+  width: 210px;
+
+  > div {
+    border: 1px solid white;
+    height: 100%;
+    width: 100%;
+  }
+}
