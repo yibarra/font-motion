@@ -1,4 +1,5 @@
 import { FontData } from '@react-three/drei'
+import type { IFontConvertOptions } from './interfaces'
 
 // get name
 export const getName = (font: opentype.Font) => {
@@ -47,16 +48,32 @@ export const getNamedInstanceSetting = (font: opentype.Font, index: number) => {
   return null
 }
 
-export const fileBlob = (output: string) => {
-  const blob = new Blob([ output ], { type: 'text/plain' })
+export const snap = (v: number, distance: number, strength: number) => 
+  (v * (1.0 - strength)) + (strength * Math.round(v / distance) * distance)
 
-  console.info(blob)
+// get path
+export const getPath = (value: number, snapValue: number, distance: number, strength: number) => {
+  let path = String(snap(value + snapValue, distance, strength) - snapValue)
+  path += ' '
 
-  return URL.createObjectURL(blob)
+  return path
 }
-export const fontConvert = (font: opentype.Font, indexLetter: number, restrictContent: string) => {
+
+
+ // font convert
+export const fontConvert = (font: opentype.Font, indexLetter: number, options: IFontConvertOptions) => {
+  const {
+    restrictContent,
+    snapping: {
+      strength = 0,
+      snapDistance = 0,
+      snapX = 0,
+      snapY = 0
+    },
+  } = options
+
   const scale = (1000 * 100) / ((font.unitsPerEm || 2048) * 72)
-  const result: IFontConvert = {
+  const result: any = {
     ascender: 0,
     descender: 0,
     boundingBox: {
@@ -78,7 +95,7 @@ export const fontConvert = (font: opentype.Font, indexLetter: number, restrictCo
     set: null
   };
 
-  if (restrictContent.length) {
+  if (restrictContent && restrictContent.length) {
     const rangeSeparator = '-'
 
     if (restrictContent.indexOf(rangeSeparator) !== -1) {
@@ -117,7 +134,7 @@ export const fontConvert = (font: opentype.Font, indexLetter: number, restrictCo
 
       if (restriction.range !== null) {
         needToExport = unicode >= restriction.range[0] && unicode <= restriction.range[1]
-      } else if (restriction.set !== null) {
+      } else if (restriction.set !== null && restrictContent) {
         needToExport = restrictContent.indexOf(glyphCharacter) !== -1
       }
 
@@ -135,25 +152,25 @@ export const fontConvert = (font: opentype.Font, indexLetter: number, restrictCo
           token.o += command.type.toLowerCase()
           token.o += ' '
 
-          if (command.x !== undefined && command.y !== undefined) {
-            token.o += Math.round(command.x * scale)
-            token.o += ' '
-            token.o += Math.round(command.y * scale)
-            token.o += ' '
+          if (command.type !== 'Z') {
+            if (command.x !== undefined && command.y !== undefined) {
+              token.o += getPath(Math.round(command.x * scale), snapX, snapDistance, strength)
+              token.o += getPath(Math.round(command.y * scale), snapY, snapDistance, strength)
+            }
           }
-
-          if (command.x1 !== undefined && command.y1 !== undefined) {
-            token.o += Math.round(command.x1 * scale)
-            token.o += ' '
-            token.o += Math.round(command.y1 * scale)
-            token.o += ' '
+      
+          if (command.type === 'Q' || command.type === 'C') {
+            if (command.x1 !== undefined && command.y1 !== undefined) {
+              token.o += getPath(Math.round(command.x1 * scale), snapX, snapDistance, strength)
+              token.o += getPath(Math.round(command.y1 * scale), snapY, snapDistance, strength)
+            }
           }
-
-          if (command.x2 !== undefined && command.y2 !== undefined) {
-            token.o += Math.round(command.x2 * scale)
-            token.o += ' '
-            token.o += Math.round(command.y2 * scale)
-            token.o += ' '
+      
+          if (command.type === 'C') {
+            if (command.x2 !== undefined && command.y2 !== undefined) {
+              token.o += getPath(Math.round(command.x2 * scale), snapX, snapDistance, strength)
+              token.o += getPath(Math.round(command.y2 * scale), snapY, snapDistance, strength)
+            }
           }
         })
 

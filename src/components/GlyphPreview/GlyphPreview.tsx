@@ -1,6 +1,6 @@
 import { memo, useContext, useRef } from 'react'
 import { Canvas, ThreeElements } from '@react-three/fiber'
-import { AccumulativeShadows, Center, Grid, OrbitControls, PerspectiveCamera, RandomizedLight, Text3D } from '@react-three/drei'
+import { AccumulativeShadows, Center, GizmoHelper, GizmoViewport, Grid, OrbitControls, Outlines, PerspectiveCamera, RandomizedLight, Text3D } from '@react-three/drei'
 import { FontSettingsContext } from '../../providers/FontSettingsProvider/FontSettingsProvider'
 import { fontConvert } from '../../providers/FontSettingsProvider/helpers'
 import './styles.scss'
@@ -48,7 +48,7 @@ function Box(props: ThreeElements['mesh'] & { fontConvert: any}) {
           size={10}
         >
           B
-          <meshBasicMaterial color="red" />
+          <meshBasicMaterial color="white" />
         </Text3D>
       </Center>
     </mesh>
@@ -61,6 +61,25 @@ const Shadows = memo(() => (
   </AccumulativeShadows>
 ))
 
+const Controls = () => {
+  return (
+    <>
+      <GizmoHelper
+        alignment="bottom-right"
+        margin={[100, 100]}
+        >
+        <GizmoViewport
+          axisColors={['red', 'green', 'blue']}
+          labelColor="white"
+          axisHeadScale={1}
+        />
+      </GizmoHelper>
+
+      <OrbitControls makeDefault />
+    </>
+  )
+}
+
 const GlyphPreview = () => {
   const { font } = useContext(FontSettingsContext)
 
@@ -68,7 +87,15 @@ const GlyphPreview = () => {
     return <></>
   }
 
-  const fontS =  fontConvert(font, 8, '')
+  const fontS =  fontConvert(font, 8, {
+    restrictContent: '',
+    snapping: {
+      strength: 1,
+      snapDistance: 10,
+      snapX: 10,
+      snapY: 1
+    }
+  })
 
   return (
     <div className="glyph-preview">
@@ -92,7 +119,6 @@ const GlyphPreview = () => {
 
         <Ground />
         <Box fontConvert={fontS} />
-        <axesHelper scale={2} position={[0, 0, 0]} onUpdate={(self) => self.setColors('#ff2080', '#20ff80', '#2080ff')} />
       </Canvas>
     </div>
   )

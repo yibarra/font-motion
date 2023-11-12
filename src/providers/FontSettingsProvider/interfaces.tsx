@@ -54,3 +54,13 @@ export interface IFontConvert {
   underlinePosition: number
   underlineThickness: number
 }
+
+export type IFontConvertOptions = {
+  restrictContent?: string
+  snapping: {
+    snapDistance: number
+    strength: number
+    snapX: number
+    snapY: number
+  }
+}
