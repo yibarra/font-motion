@@ -4,6 +4,7 @@ import { AccumulativeShadows, Center, GizmoHelper, GizmoViewport, Grid, OrbitCon
 import { FontSettingsContext } from '../../providers/FontSettingsProvider/FontSettingsProvider'
 import { fontConvert } from '../../providers/FontSettingsProvider/helpers'
 import './styles.scss'
+import { IFontConvertOptions } from '../../providers/FontSettingsProvider/interfaces'
 
 
 function Ground() {
@@ -19,10 +20,11 @@ function Ground() {
     followCamera: false,
     infiniteGrid: true
   }
+
   return <Grid position={[0, -0.01, 0]} args={[10.5, 10.5]} {...gridConfig} />
 }
 
-function Box(props: ThreeElements['mesh'] & { fontConvert: any}) {
+function Letter(props: ThreeElements['mesh'] & { fontConvert: any}) {
   const ref = useRef<THREE.Mesh>(null!)
 
   // useFrame((state, delta) => (ref.current.rotation.x += delta))
@@ -80,7 +82,7 @@ const Controls = () => {
   )
 }
 
-const GlyphPreview = () => {
+const GlyphPreview = ({ snapping }: { snapping: IFontConvertOptions['snapping'] }) => {
   const { font } = useContext(FontSettingsContext)
 
   if (!font) {
@@ -89,12 +91,7 @@ const GlyphPreview = () => {
 
   const fontS =  fontConvert(font, 8, {
     restrictContent: '',
-    snapping: {
-      strength: 1,
-      snapDistance: 10,
-      snapX: 10,
-      snapY: 1
-    }
+    snapping,
   })
 
   return (
@@ -118,7 +115,7 @@ const GlyphPreview = () => {
         />
 
         <Ground />
-        <Box fontConvert={fontS} />
+        <Letter fontConvert={fontS} />
       </Canvas>
     </div>
   )

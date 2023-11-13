@@ -11,12 +11,12 @@ export const getName = (font: opentype.Font) => {
 }
 
 // get fvar table
-export const getFvarTable = (font: opentype.Font) => {
-  if (font.tables) {
+export const getFvarTable = (font?: opentype.Font) => {
+  if (font && font.tables) {
     return font.tables['fvar']
   }
 
-  return false
+  return undefined
 }
 
 // get name instance
@@ -48,6 +48,7 @@ export const getNamedInstanceSetting = (font: opentype.Font, index: number) => {
   return null
 }
 
+// snap
 export const snap = (v: number, distance: number, strength: number) => 
   (v * (1.0 - strength)) + (strength * Math.round(v / distance) * distance)
 
@@ -58,7 +59,6 @@ export const getPath = (value: number, snapValue: number, distance: number, stre
 
   return path
 }
-
 
  // font convert
 export const fontConvert = (font: opentype.Font, indexLetter: number, options: IFontConvertOptions) => {
@@ -148,7 +148,6 @@ export const fontConvert = (font: opentype.Font, indexLetter: number, options: I
         token.o = ''
 
         glyph.path.commands.forEach((command) => {
-          console.info(command)
           token.o += command.type.toLowerCase()
           token.o += ' '
 

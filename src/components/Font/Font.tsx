@@ -1,84 +1,33 @@
-import { useState } from 'react'
-
 import Glyphs from './Glyphs'
 import GlyphPreview from '../GlyphPreview'
+import FormVariations from '../FormVariations/FormVariations'
+import { useContext } from 'react'
+import { FontSettingsContext } from '../../providers/FontSettingsProvider/FontSettingsProvider'
 
 const Font = () => {
-  const [fontSize, setFontSize] = useState(0.5)
+  const { font, setInstanceValue } = useContext(FontSettingsContext)
 
-  const handleSliderChange = (event: any) => {
-    setFontSize(parseFloat(event.target.value))
-  }
+  console.info(setInstanceValue)
 
+  // render
   return (
-    <div>
-      <div>
-        <div>
-          <label htmlFor="fontSizeSlider">Ajustar Tamaño de Fuente:</label>
-          <input
-            type="range"
-            id="fontSizeSlider"
-            min="0"
-            max="1"
-            step="0.01"
-            value={fontSize}
-            onChange={handleSliderChange}
+    <div style={{ display: 'flex', flexFlow: 'row wrap'}}>
+      {font && (
+        <>
+          <GlyphPreview
+            snapping={{
+              strength: 80,
+              snapDistance: 1,
+              snapX: 0,
+              snapY: 0
+            }}
           />
-        </div>
 
-        <div>
-          <label htmlFor="strength">Strength:</label>
-          <input
-            type="range"
-            id="fontStrengthSlider"
-            min="0"
-            max="1"
-            step="0.01"
-            value={fontSize}
-            onChange={handleSliderChange}
-          />
-        </div>
+          <FormVariations fvar={font?.tables['fvar']} />
 
-        <div>
-          <label htmlFor="fontDistanceSlider">Distance:</label>
-          <input
-            type="range"
-            id="fontSizeSlider"
-            min="0"
-            max="1"
-            step="0.01"
-            value={fontSize}
-            onChange={handleSliderChange}
-          />
-        </div>
-        <div>
-          <label htmlFor="fontXSlider">X:</label>
-          <input
-            type="range"
-            id="fontSizeSlider"
-            min="0"
-            max="1"
-            step="0.01"
-            value={fontSize}
-            onChange={handleSliderChange}
-          />
-        </div>
-        <div>
-          <label htmlFor="fontYSlider">Y:</label>
-          <input
-            type="range"
-            id="fontSizeSlider"
-            min="0"
-            max="1"
-            step="0.01"
-            value={fontSize}
-            onChange={handleSliderChange}
-          />
-        </div>
-      </div>
-
-      <GlyphPreview />
-      <Glyphs />
+          <Glyphs />
+        </>
+      )}
     </div>
   )
 }
