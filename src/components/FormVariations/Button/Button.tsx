@@ -1,8 +1,10 @@
-import { useRef, type HTMLAttributes, type PropsWithChildren, useEffect, useContext } from 'react'
+import { useRef, useEffect, useContext } from 'react'
+import type { HTMLAttributes, PropsWithChildren } from 'react'
+
 import { FontSettingsContext } from '../../../providers/FontSettingsProvider/FontSettingsProvider'
 
-const Button = ({ children, ...props }: PropsWithChildren<HTMLAttributes<HTMLElement>> & any) => {
-  const { setInstanceValue } = useContext(FontSettingsContext)
+const Button = ({ children, ...props }: PropsWithChildren<HTMLAttributes<HTMLElement>> & opentype.Table) => {
+  const { font, setInstanceValue } = useContext(FontSettingsContext)
   const element = useRef(null)
 
   // use effect
@@ -14,7 +16,14 @@ const Button = ({ children, ...props }: PropsWithChildren<HTMLAttributes<HTMLEle
 
   // render
   return (
-    <button ref={element} type="button">
+    <button
+      onClick={props.onClick}
+      ref={element}
+      type="button"
+      style={{
+        fontFamily: font?.names.fontFamily['en']
+      }}
+    >
       {children}
     </button>
   )

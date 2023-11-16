@@ -1,6 +1,7 @@
 import type { PropsWithChildren } from 'react'
 import LoadFontProvider from '../LoadFontProvider'
 import FontSettingsProvider from '../FontSettingsProvider'
+import PreviewProvider from '../PreviewProvider/PreviewProvider'
 
 // Main Provider
 const MainProvider = ({ children }: PropsWithChildren) => {
@@ -8,7 +9,9 @@ const MainProvider = ({ children }: PropsWithChildren) => {
   return (
     <LoadFontProvider>
       <FontSettingsProvider>
-        {children}
+        <PreviewProvider>
+          {children}
+        </PreviewProvider>
       </FontSettingsProvider>
     </LoadFontProvider>
   )

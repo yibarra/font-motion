@@ -1,78 +1,51 @@
-import { useFormik } from 'formik'
-import { Table } from 'opentype.js'
+import { useContext } from 'react'
 import Button from './Button'
 
+import { FontSettingsContext } from '../../providers/FontSettingsProvider/FontSettingsProvider'
+import Slider from './Slider'
+import { createInputSlider, createInputs } from './helpers'
 import './styles.scss'
 
-interface FormObject {
-  [key: string]: string | number
-}
 
-const createInputSlider = (inputs: Table['tables']) => 
- (inputs.filter((e) => e.type === 'slider'))
+// form variations
+const FormVariations = ({ tableFVar }: opentype.Font['tables']) => {
+  const { fvar, setFvar } = useContext(FontSettingsContext)
 
- // create inputs
-const createInputs = (fvar: Table) => {
-  const initialValues = []
+  const inputs = createInputs(tableFVar)
+  const sliders = createInputSlider(inputs)
 
-  for (const item of Object.keys(fvar).map((i) => fvar[i])) {
-    for (const value of item) {
-      if (value.tag && initialValues.indexOf({ ...value, type: 'slider'}) === -1) {
-        initialValues.push({ ...value, type: 'slider' })
-      }
+  // slider
+  const updateFVarAxe = (key: string, value: number) => {
+    const coordinates = fvar.coordinates
 
-      if (value.coordinates) {
-        initialValues.push({ ...value, type: 'button' })
-      }
+    if (coordinates) {
+      coordinates[key] = value
+      
+      setFvar({ coordinates })
     }
   }
 
-  return initialValues
-}
-
-// form variations
-const FormVariations = ({ fvar }: opentype.Font['tables']) => {
-  const initialValues: FormObject = {}
-  const inputs = createInputs(fvar)
-  const sliders = createInputSlider(inputs)
-
-  sliders.map((field) => (initialValues[field.tag] = ''))
-
-  const formik = useFormik({
-    initialValues,
-    onSubmit: (values) => {
-      console.log('Dados do formulário:', values)
-    },
-  })
+  // button
+  const updateCanvas = (settings: opentype.Table) => {
+    setFvar({ coordinates: settings.coordinates })
+  }
 
   return (
-    <form className="form" onSubmit={formik.handleSubmit}>
-      <div>
-        {sliders.map((i) => (
-          <label>
-            <span>{i.name['en']}</span>
-            <input
-              type="range"
-              id={i.tag}
-              name={i.tag}
-              value={formik.values[i.tag] as number}
-              onChange={formik.handleChange}
-              max={i.maxValue}
-              min={i.minValue}
-              step={1}
-            />
-          </label>
+    <div className="form">
+      <div className="form-axes">
+        {sliders.map((i, index) => (
+          <Slider callback={updateFVarAxe} input={i} key={index} />
         ))}
-
-        <div>
-          {inputs.filter((i) => i.type === 'button').map((e, index) => (
-            <Button {...e} key={index}>
-              <span>{e.name['en']}</span>
-            </Button>
-          ))}
-        </div>
       </div>
-    </form>
+
+      <div className="form-settings">
+        {inputs.filter((i) => i.type === 'button').map((e, index) => (
+          <Button {...e} key={index} onClick={() => updateCanvas(e)}>
+            <span>B</span>
+          </Button>
+        ))}
+      </div>
+    </div>
   )
 }
 

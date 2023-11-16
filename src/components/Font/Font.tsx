@@ -23,7 +23,7 @@ const Font = () => {
             }}
           />
 
-          <FormVariations fvar={font?.tables['fvar']} />
+          <FormVariations tableFVar={font?.tables['fvar']} />
 
           <Glyphs />
         </>

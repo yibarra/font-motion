@@ -1,4 +1,5 @@
-import type { PropsWithChildren } from 'react'
+import { Table } from 'opentype.js'
+import type { Dispatch, PropsWithChildren, SetStateAction } from 'react'
 
 export interface IFontTable {
   [name: string]: string | number | Record<string, never> 
@@ -24,6 +25,8 @@ export interface CSSStyleDeclaration {
 
 export interface IFontSettingsContext {
   font: opentype.Font | null
+  fvar: Pick<Table, 'coordinates'>
+  setFvar: Dispatch<SetStateAction<Pick<Table, 'coordinates'>>>
   setInstanceValue(settings: opentype.Table, element: HTMLElement): void | boolean
   setNamedInstanceValue(settings: opentype.Table, element: HTMLElement): void
 }

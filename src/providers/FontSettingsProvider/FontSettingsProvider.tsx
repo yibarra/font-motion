@@ -1,4 +1,5 @@
-import { createContext, useCallback, useContext } from 'react'
+import { createContext, useCallback, useContext, useEffect, useState } from 'react'
+import type { Table } from 'opentype.js'
 
 import { LoadFontContext } from '../LoadFontProvider/LoadFontProvider'
 import { getFvarTable } from './helpers'
@@ -10,6 +11,8 @@ const FontSettingsContext = createContext({} as IFontSettingsContext)
 // Load Font Provider
 const FontSettingsProvider = ({ children }: IFontSettingsProvider) => {
   const { font } = useContext(LoadFontContext)
+
+  const [fvar, setFvar] = useState<Pick<Table, 'coordinates'>>({ coordinates: { 'wdth': 0, 'wght' : 0 }})
 
   // set css instance value
   const setInstanceValue = useCallback((settings: opentype.Table, element: HTMLElement) => {
@@ -42,11 +45,20 @@ const FontSettingsProvider = ({ children }: IFontSettingsProvider) => {
     }
   }, [ font, setInstanceValue ])
 
+  // load change
+  useEffect(() => {
+    if (fvar) {
+      setInstanceValue(fvar.coordinates, document.body)
+    }
+  }, [ fvar, setInstanceValue ])
+
   // render
   return (
     <FontSettingsContext.Provider
       value={{
         font,
+        fvar,
+        setFvar,
         setInstanceValue,
         setNamedInstanceValue
       }}

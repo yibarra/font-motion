@@ -5,6 +5,7 @@ import { FontSettingsContext } from '../../providers/FontSettingsProvider/FontSe
 import { fontConvert } from '../../providers/FontSettingsProvider/helpers'
 import './styles.scss'
 import { IFontConvertOptions } from '../../providers/FontSettingsProvider/interfaces'
+import { PreviewContext } from '../../providers/PreviewProvider/PreviewProvider'
 
 
 function Ground() {
@@ -84,6 +85,7 @@ const Controls = () => {
 
 const GlyphPreview = ({ snapping }: { snapping: IFontConvertOptions['snapping'] }) => {
   const { font } = useContext(FontSettingsContext)
+  const { canvasRef } = useContext(PreviewContext)
 
   if (!font) {
     return <></>
@@ -97,9 +99,10 @@ const GlyphPreview = ({ snapping }: { snapping: IFontConvertOptions['snapping'] 
   return (
     <div className="glyph-preview">
       <Canvas
+        ref={canvasRef}
         shadows
         style={{
-          backgroundColor: '#303035'
+          backgroundColor: '#303035',
         }}
       >
         <PerspectiveCamera
